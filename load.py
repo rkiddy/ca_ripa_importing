@@ -1,6 +1,8 @@
 
 from openpyxl import load_workbook
 
+import argparse
+
 from sqlalchemy import create_engine
 
 import config
@@ -48,11 +50,18 @@ char_cols = ['A', 'C', 'D', 'E', 'H', 'I', 'J', 'EI', 'EJ', 'EK', 'EL']
 
 if __name__ == '__main__':
 
-    sql = "select * from ripa_files"
+    parser = argparse.ArgumentParser()
+    parser.add_argument('--year')
+    args = parser.parse_args()
+
+    if not args.year:
+        sql = "select * from ripa_files"
+    else:
+        sql = f"select * from ripa_files where path like '%% {args.year} %%'"
     files = db_exec(conn, sql)
     # files = [{'pk': 0, 'path': 'test.xlsx'}]
 
-    pk = db_exec(conn, "select max(pk) as pk from ripa")[0]['pk']
+    pk = db_exec(conn, f"select max(pk) as pk from ripa_{args.year}")[0]['pk']
     if pk is None:
         pk = 0
 
@@ -61,7 +70,7 @@ if __name__ == '__main__':
         fpk = int(r['pk'])
         print(f"path: {path}")
 
-        sql = f"select count(0) as count from ripa where file_pk = {fpk}"
+        sql = f"select count(0) as count from ripa_{args.year} where file_pk = {fpk}"
         count = db_exec(conn, sql)[0]['count']
 
         if count > 0:
@@ -111,7 +120,7 @@ if __name__ == '__main__':
 
             if len(sqls) > 100:
                 values = ','.join(sqls)
-                sql = f"insert into ripa values {values}"
+                sql = f"insert into ripa_{args.year} values {values}"
                 db_exec(conn, sql)
                 sqls = list()
 
@@ -122,6 +131,6 @@ if __name__ == '__main__':
 
         if len(sqls) > 100:
             values = ','.join(sqls)
-            sql = f"insert into ripa values {values}"
+            sql = f"insert into ripa_{args.year} values {values}"
             db_exec(conn, sql)
             sqls = list()

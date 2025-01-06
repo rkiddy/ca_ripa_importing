@@ -29,11 +29,14 @@ Additionally, the 'tinyint' flag columns are set to 0 or 1, but some are NULL. I
 There may be much smarter things to do here, but this is what I have. Any suggestions in the form of pull-requests
 would be appreciated.
 
+     $ pk=`echo "select (count(0)+10000) from ca_ripa;" | mysql --skip-column-names ca_ripa`
      $ echo "desc ripa;" | mysql --skip-column-names ca_ripa | \
           awk 'BEGIN{FS="\t"}{if ($2 == "tinyint") print $1}' | \
-          awk '{for (i=1;i<11920000;i=i+10000)
+          awk '{for (i=1;i<'$pk';i=i+10000)
                     print "update ripa set "$0" = 0 where pk >= "i" and pk < "(i+10000)" and "$0" is NULL;"}' | \
           mysql -vvv ca_ripa
+
+Well. This process is taking entirelty too long. There will be a much smarter way to do this. TODO.
 
 # Fixes to the data.
 
@@ -43,3 +46,9 @@ summaries tables for each county for which there is data.
      $ bash county.sh | mysql -vvv ca_ripa
 
 This will take more than a few minutes to run, but not very much more.
+
+# "Light-time" analysis.
+
+I want to support an analysis of stops vis a vis the amount of available light. For reasons TBD.
+
+

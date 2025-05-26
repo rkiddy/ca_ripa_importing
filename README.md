@@ -16,6 +16,9 @@ To create the database and needed stuff:
          awk '{print "insert into ripa_files values ("NR", '\''"$0"'\'');"}' | mysql ca_ripa
      $
 
+This last will create all of the tables, put data into the cjis_codes table (from within the
+ca_ripa.sql file) and put data into the ripa_files table.
+
 Then do the standard stuff to use python:
 
      $ virtualenv .venv
@@ -25,23 +28,24 @@ Then do the standard stuff to use python:
 
 and wait... and wait... and wait.
 
-Additionally, the 'tinyint' flag columns are set to 0 or 1, but some are NULL. I am setting NULL values to 0.
-There may be much smarter things to do here, but this is what I have. Any suggestions in the form of pull-requests
-would be appreciated.
+Additionally, the 'tinyint' flag columns are set to 0 or 1, but some are NULL. I am setting
+NULL values to 0. There may be much smarter things to do here, but this is what I have. Any
+suggestions in the form of pull-requests would be appreciated.
 
      $ pk=`echo "select (count(0)+10000) from ca_ripa;" | mysql --skip-column-names ca_ripa`
      $ echo "desc ripa;" | mysql --skip-column-names ca_ripa | \
           awk 'BEGIN{FS="\t"}{if ($2 == "tinyint") print $1}' | \
-          awk '{for (i=1;i<'$pk';i=i+10000)
-                    print "update ripa set "$0" = 0 where pk >= "i" and pk < "(i+10000)" and "$0" is NULL;"}' | \
+          awk '{for (i=1;i<'$pk';i=i+10000) {
+                    print "update ripa set "$0" = 0 where";
+                    print "pk >= "i" and pk < "(i+10000)" and "$0" is NULL;"}' | \
           mysql -vvv ca_ripa
 
-Well. This process is taking entirelty too long. There will be a much smarter way to do this. TODO.
+TODO This process is taking entirelty too long. There will be a much smarter way to do this.
 
 # Fixes to the data.
 
-The county.sql file and the county.sh script will create a "summaries" table, and then they will create different
-summaries tables for each county for which there is data.
+The county.sql file and the county.sh script will create a "summaries" table, and then they
+will create different summaries tables for each county for which there is data.
 
      $ bash county.sh | mysql -vvv ca_ripa
 
@@ -49,6 +53,5 @@ This will take more than a few minutes to run, but not very much more.
 
 # "Light-time" analysis.
 
-I want to support an analysis of stops vis a vis the amount of available light. For reasons TBD.
-
+For an analysis of stops vis a vis the amount of available light, see the sunlight.md file.
 

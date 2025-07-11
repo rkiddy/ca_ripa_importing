@@ -1,5 +1,12 @@
 # Importing RIPA data from the state of California
 
+Anyone coming from the RIPA meeting on July 11, 2025, welcome! Please get in touch with
+me at ray@ganymede.org. This project has problems and issues but it is a work in process.
+But, all of life is a work in progress. Please get in touch orfile issues with any
+feedback you have.
+
+Thank you for your support.
+
 Go to:
 
    https://openjustice.doj.ca.gov/data

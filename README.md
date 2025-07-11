@@ -2,7 +2,7 @@
 
 Anyone coming from the RIPA meeting on July 11, 2025, welcome! Please get in touch with
 me at ray@ganymede.org. This project has problems and issues but it is a work in process.
-But, all of life is a work in progress. Please get in touch orfile issues with any
+But, all of life is a work in progress. Please get in touch or file issues with any
 feedback you have.
 
 Thank you for your support.
